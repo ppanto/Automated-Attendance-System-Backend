@@ -2,6 +2,7 @@ package com.panto.attendance.mapper;
 
 import com.panto.attendance.dto.MyDateSimpleResponse;
 import com.panto.attendance.dto.reporting.ChartReportResponse;
+import com.panto.attendance.dto.reporting.TimeReportPerPersonnelForDateResponse;
 import com.panto.attendance.model.MyDate;
 import org.mapstruct.Mapper;
 
@@ -9,4 +10,5 @@ import org.mapstruct.Mapper;
 public interface MyDateMapper {
     MyDateSimpleResponse mapToSimpleResponse(MyDate myDate);
     ChartReportResponse mapDateToChartResponse(MyDate myDate);
+    TimeReportPerPersonnelForDateResponse mapDateToTimeReportPerPersonnelForDate(MyDate myDate);
 }

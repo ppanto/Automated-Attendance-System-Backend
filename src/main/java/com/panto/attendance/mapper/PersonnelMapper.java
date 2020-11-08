@@ -4,6 +4,7 @@ import com.panto.attendance.dto.PersonnelExtraSimpleResponse;
 import com.panto.attendance.dto.PersonnelResponse;
 import com.panto.attendance.dto.PersonnelSimpleResponse;
 import com.panto.attendance.dto.PersonnelUpsertRequest;
+import com.panto.attendance.dto.reporting.TimeReportPerPersonnelResponse;
 import com.panto.attendance.model.Department;
 import com.panto.attendance.model.Personnel;
 import com.panto.attendance.model.Title;
@@ -71,5 +72,9 @@ public interface PersonnelMapper {
     @Mapping(target="department",expression = "java(personnel.getDepartment().getName())")
     @Mapping(target="title",expression = "java(personnel.getTitle().getName())")
     PersonnelExtraSimpleResponse mapToDtoExtraSimpleResponse(Personnel personnel);
+
+    @Mapping(target="personnelId",expression="java(personnel.getId())")
+    @Mapping(target="personnelFullName",expression = "java(personnel.getFirstName() + ' ' + personnel.getLastName())")
+    TimeReportPerPersonnelResponse mapToTimeReportForPersonnel(Personnel personnel);
 }
 
