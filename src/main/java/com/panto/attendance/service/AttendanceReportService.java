@@ -112,7 +112,7 @@ public class AttendanceReportService {
                 if(eventId == 4){
                     oneDay.setTotalTimeWorked(oneDay.getTotalTimeWorked() + time);
                     personnel.setTotalDaysWorked(personnel.getTotalDaysWorked() + 1);
-                    personnel.setTotalTimeWorked(personnel.getTotalDaysWorked() + time);
+                    personnel.setTotalTimeWorked(personnel.getTotalTimeWorked() + time);
                     if(oneDay.isHoliday()){
                         oneDay.setTotalHolidayTimeWorked(oneDay.getTotalHolidayTimeWorked() + time);
                         personnel.setTotalHolidayTimeWorked(personnel.getTotalHolidayTimeWorked() + time);

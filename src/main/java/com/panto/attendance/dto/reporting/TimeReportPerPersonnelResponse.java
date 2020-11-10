@@ -12,6 +12,8 @@ import java.util.List;
 public class TimeReportPerPersonnelResponse extends TimeGeneralData{
     private Long personnelId;
     private String personnelFullName;
+    private String title;
+    private String department;
     private List<TimeReportPerPersonnelForDateResponse> timeReportPerPersonnelForDateResponseList;
 
 //    private Long totalTimeWorked = 0L; //milliseconds

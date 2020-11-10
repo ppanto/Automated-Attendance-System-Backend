@@ -1,5 +1,6 @@
 package com.panto.attendance.controller;
 
+import com.panto.attendance.dto.MyDateUpsertRequest;
 import com.panto.attendance.mapper.MyDateMapper;
 import com.panto.attendance.model.MyDate;
 import com.panto.attendance.repository.MyDateRepository;
@@ -28,10 +29,11 @@ public class MyDateController {
         );
     }
     @PostMapping("/holiday")
-    public ResponseEntity<?> toggleHoliday(@RequestBody Date fullDate){
-        Optional<MyDate> database = myDateRepository.findById(fullDate);
+    public ResponseEntity<?> toggleHoliday(@RequestBody MyDateUpsertRequest myDateUpsertRequest){
+        Optional<MyDate> database = myDateRepository.findById(myDateUpsertRequest.getFullDate());
         if(database.isEmpty()) return ResponseEntity.notFound().build();
         database.get().setHoliday(!database.get().isHoliday());
+        database.get().setDescription(myDateUpsertRequest.getDescription());
         MyDate result = myDateRepository.save(database.get());
         return ResponseEntity.ok().body(myDateMapper.mapToSimpleResponse(result));
     }

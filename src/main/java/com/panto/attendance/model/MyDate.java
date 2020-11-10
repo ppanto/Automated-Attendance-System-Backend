@@ -20,4 +20,5 @@ public class MyDate {
     private short yearNumber;
     private boolean isHoliday;
     private boolean isWeekend;
+    private String description;
 }

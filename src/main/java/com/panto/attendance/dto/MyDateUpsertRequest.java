@@ -9,7 +9,7 @@ import java.sql.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MyDateSimpleResponse {
-    private Date fullDate;
-    private String description = "";
+public class MyDateUpsertRequest {
+    Date fullDate;
+    String description;
 }

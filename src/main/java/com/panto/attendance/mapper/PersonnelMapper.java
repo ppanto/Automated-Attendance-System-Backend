@@ -75,6 +75,8 @@ public interface PersonnelMapper {
 
     @Mapping(target="personnelId",expression="java(personnel.getId())")
     @Mapping(target="personnelFullName",expression = "java(personnel.getFirstName() + ' ' + personnel.getLastName())")
+    @Mapping(target="department",expression = "java(personnel.getDepartment().getName())")
+    @Mapping(target="title",expression = "java(personnel.getTitle().getName())")
     TimeReportPerPersonnelResponse mapToTimeReportForPersonnel(Personnel personnel);
 }
 
