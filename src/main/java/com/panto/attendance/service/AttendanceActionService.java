@@ -1,7 +1,6 @@
 package com.panto.attendance.service;
 
 import com.panto.attendance.dto.PersonnelExtraSimpleResponse;
-import com.panto.attendance.dto.PersonnelSimpleResponse;
 import com.panto.attendance.dto.attendance.*;
 import com.panto.attendance.dto.reporting.DailyReportResponse;
 import com.panto.attendance.mapper.PersonnelMapper;

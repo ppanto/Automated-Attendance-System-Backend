@@ -43,7 +43,7 @@ public class SignalRController {
     @PostMapping("/api/attendance/insert")
     public ResponseEntity<?> insertAttendance(@RequestBody @Valid AttendanceInsertRequest request) {
         AttendanceActionSimpleResponse attendanceResponse = attendanceActionInsertService.insert(request);
-        if(!attendanceResponse.getId().equals(null)){
+        if(attendanceResponse.getId() != null){
             Thread thread = new Thread(() -> {
                 sendMessageToClientsViaSignal(attendanceResponse);
             });
@@ -57,10 +57,36 @@ public class SignalRController {
     private TerminalResponse getTerminalResponseFromAttendance(AttendanceActionSimpleResponse attendance){
         TerminalResponse finalResponse = new TerminalResponse();
         finalResponse.fullName = attendance.getPersonnelName();
-        if(attendance.getId().equals(null)){
+        if(attendance.getId() == null){
             finalResponse.isSuccessful = false;
+            finalResponse.errorCode = attendance.getMessageCode();
+            if(finalResponse.errorCode == 1){
+                finalResponse.message = "You have already started work.";
+            }
+            else if(finalResponse.errorCode == 2){
+                finalResponse.message = "You haven't started work yet.";
+            }
+            else if(finalResponse.errorCode == 3){
+                finalResponse.message = "You haven't finished previous action.";
+            }
+            else if(finalResponse.errorCode == 4){
+                finalResponse.message = "Welcome.";
+            }
+            else if(finalResponse.errorCode == 5){
+                finalResponse.message = "Have fun.";
+            }
+            else if(finalResponse.errorCode == 6){
+                finalResponse.message = "Stay safe.";
+            }
+            else if(finalResponse.errorCode == 7){
+                finalResponse.message = "Goodbye and see you soon.";
+            }
+            else if(finalResponse.errorCode == 8){
+                finalResponse.message = "Welcome back.";
+            }
         }
         else{
+
             finalResponse.isSuccessful = true;
         }
         return finalResponse;

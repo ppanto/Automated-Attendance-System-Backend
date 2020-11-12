@@ -31,12 +31,6 @@ public class AttendanceAction {
     @Column(name = "personnel_id", insertable = false, updatable = false)
     private Long personnelId;
 
-//    public AttendanceAction(Instant dateTime, AttendanceEvent attendanceEvent, Personnel personnel, Date date){
-//        this.dateTime = dateTime;
-//        this.attendanceEvent = attendanceEvent;
-//        this.personnel = personnel;
-//        this.date = date;
-//    }
     public AttendanceAction(Timestamp dateTime, AttendanceEvent attendanceEvent, Personnel personnel, Date date){
         this.dateTime = dateTime;
         this.attendanceEvent = attendanceEvent;

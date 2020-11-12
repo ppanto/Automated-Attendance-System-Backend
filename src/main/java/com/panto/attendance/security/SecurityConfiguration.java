@@ -30,59 +30,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/api/personnel/image/get/*");
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception{
-//        http
-//                .csrf().disable()
-//                //.cors().and()
-//                //.authorizeRequests().antMatchers("/").permitAll()
-//                //.authorizeRequests().anyRequest().authenticated()
-//                .authorizeRequests()
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                    .anyRequest().authenticated()
-//                .and().httpBasic()
-//                //.and().sessionManagement().disable();
-//                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//    }
-@Override
-protected void configure(HttpSecurity http) throws Exception{
-    http
-            .cors().and()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .anyRequest().authenticated()
-            .and().httpBasic()
-            .and().csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception{
+        http
+                .cors().and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .anyRequest().authenticated()
+                .and().httpBasic()
+                .and().csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
 
     @Override
     public void configure(AuthenticationManagerBuilder builder) throws Exception{
         builder.userDetailsService(userDetailsService);
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH",
-//                "DELETE", "OPTIONS", "*"));
-//        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type",
-//                "x-auth-token","x-requested-with", "x-xsrf-token", "*"));
-//        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
-//        UrlBasedCorsConfigurationSource source = new
-//                UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//
-//        return source;
-//    }
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowCredentials(true).allowedOrigins("http://localhost:3000").allowedMethods("*");
+                registry.addMapping("/**").allowCredentials(true).allowedOrigins("http://localhost:3000", "http://localhost:5000").allowedMethods("*");
             }
         };
     }
