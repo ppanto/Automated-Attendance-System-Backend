@@ -122,13 +122,16 @@ public class AttendanceActionService {
             forOnePersonnel.setAttendanceActionSingularResponseList(singularResponses);
 
             if(forOnePersonnel.getAttendanceActionLeavePartialResponse() == null
-                && forOnePersonnel.getAttendanceActionShiftPartialResponse() != null){
+                && forOnePersonnel.getAttendanceActionShiftPartialResponse() != null)
+            {
+                boolean hasStart = false;
                 for(AttendanceActionSingularResponse action : forOnePersonnel.getAttendanceActionSingularResponseList()){
                     if(action.getEventId() == 1){ //Work Start
                         forOnePersonnel.setStartTimeRegular(getIsStartTimeRegular(
                                 forOnePersonnel.getAttendanceActionShiftPartialResponse().getShiftStartTime(),
                                 action.getDateTime()
                         ));
+                        hasStart = true;
                     }
                     else if(action.getEventId() == 4){ //Work End
                         forOnePersonnel.setEndTimeRegular(getIsEndTimeRegular(
@@ -137,7 +140,14 @@ public class AttendanceActionService {
                         ));
                     }
                 }
+                if(!hasStart){
+                    forOnePersonnel.setStartTimeRegular(getIsStartTimeRegular(
+                            forOnePersonnel.getAttendanceActionShiftPartialResponse().getShiftStartTime(),
+                            LocalDateTime.now()
+                    ));
+                }
             }
+
 
             listForFinalResponse.add(forOnePersonnel);
         }

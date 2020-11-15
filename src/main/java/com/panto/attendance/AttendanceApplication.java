@@ -15,8 +15,8 @@ public class AttendanceApplication {
 		SpringApplication.run(AttendanceApplication.class, args);
 	}
 
-	@Bean
-	public ServletWebServerFactory servletWebServerFactory() {
-		return new TomcatServletWebServerFactory();
-	}
+//	@Bean
+//	public ServletWebServerFactory servletWebServerFactory() {
+//		return new TomcatServletWebServerFactory();
+//	}
 }

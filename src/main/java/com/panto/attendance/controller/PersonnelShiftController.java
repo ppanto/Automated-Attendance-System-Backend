@@ -15,12 +15,16 @@ public class PersonnelShiftController {
     private final PersonnelShiftService personnelShiftService;
 
     @GetMapping
-    public ResponseEntity<?> get(@RequestParam(required = false) Long personnelId){
+    public ResponseEntity<?> get(){
+        return ResponseEntity.ok().body(personnelShiftService.get());
+    }
+    @GetMapping("by-personnel")
+    public ResponseEntity<?> getByPersonnelId(@RequestParam(required = true) Long personnelId){
         if(personnelId == null) return ResponseEntity.ok().body(personnelShiftService.get());
         else return ResponseEntity.ok().body(personnelShiftService.getByPersonnelId(personnelId));
     }
     @GetMapping("ongoing")
-    public ResponseEntity<?> getAllOngoing(@RequestParam(required = false) Long personnelId){
+    public ResponseEntity<?> getAllOngoing(@RequestParam(required = true) Long personnelId){
         if(personnelId == null) return ResponseEntity.ok().body(personnelShiftService.getAllOngoing());
         else return ResponseEntity.ok().body(personnelShiftService.getAllOngoingByPersonnelId(personnelId));
     }

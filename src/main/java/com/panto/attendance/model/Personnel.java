@@ -38,6 +38,6 @@ public class Personnel {
     private Date dateOfBirth;
     private String address;
     @NotNull
-    private boolean activeStatus;
+    private boolean activeStatus = true;
     private String gender;
 }

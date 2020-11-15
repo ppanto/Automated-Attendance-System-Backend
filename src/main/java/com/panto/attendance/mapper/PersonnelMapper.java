@@ -60,7 +60,6 @@ public interface PersonnelMapper {
     }
 
     @Mapping(target="id", ignore = true)
-    //@Mapping(target="image", ignore = true)
     @Mapping(target="title",source = "title")
     @Mapping(target="department", source = "department")
     Personnel mapToDatabasePersonnel(PersonnelUpsertRequest entity, Title title, Department department);
@@ -69,14 +68,23 @@ public interface PersonnelMapper {
     PersonnelSimpleResponse mapToDtoSimpleResponse(Personnel personnel);
 
     @Mapping(target="fullName",expression = "java(personnel.getFirstName() + ' ' + personnel.getLastName())")
-    @Mapping(target="department",expression = "java(personnel.getDepartment().getName())")
-    @Mapping(target="title",expression = "java(personnel.getTitle().getName())")
+    @Mapping(target="department",expression = "java(getDepartment(personnel))")
+    @Mapping(target="title",expression = "java(getTitle(personnel))")
     PersonnelExtraSimpleResponse mapToDtoExtraSimpleResponse(Personnel personnel);
 
     @Mapping(target="personnelId",expression="java(personnel.getId())")
     @Mapping(target="personnelFullName",expression = "java(personnel.getFirstName() + ' ' + personnel.getLastName())")
-    @Mapping(target="department",expression = "java(personnel.getDepartment().getName())")
-    @Mapping(target="title",expression = "java(personnel.getTitle().getName())")
+    @Mapping(target="department",expression = "java(getDepartment(personnel))")
+    @Mapping(target="title",expression = "java(getTitle(personnel))")
     TimeReportPerPersonnelResponse mapToTimeReportForPersonnel(Personnel personnel);
+
+    default String getDepartment(Personnel personnel){
+        Department d = personnel.getDepartment();
+        return d == null ? "" : d.getName();
+    }
+    default String getTitle(Personnel personnel){
+        Title t = personnel.getTitle();
+        return t == null ? "" : t.getName();
+    }
 }
 

@@ -9,5 +9,5 @@ public class TerminalResponse {
     public boolean isSuccessful;
     public String message;
     public String fullName;
-    public Integer errorCode;
+    public Integer messageCode;
 }

@@ -55,39 +55,38 @@ public class SignalRController {
     }
 
     private TerminalResponse getTerminalResponseFromAttendance(AttendanceActionSimpleResponse attendance){
-        TerminalResponse finalResponse = new TerminalResponse();
+        TerminalResponse finalResponse = new TerminalResponse(false, null, null, null);
         finalResponse.fullName = attendance.getPersonnelName();
-        if(attendance.getId() == null){
-            finalResponse.isSuccessful = false;
-            finalResponse.errorCode = attendance.getMessageCode();
-            if(finalResponse.errorCode == 1){
-                finalResponse.message = "You have already started work.";
-            }
-            else if(finalResponse.errorCode == 2){
-                finalResponse.message = "You haven't started work yet.";
-            }
-            else if(finalResponse.errorCode == 3){
-                finalResponse.message = "You haven't finished previous action.";
-            }
-            else if(finalResponse.errorCode == 4){
-                finalResponse.message = "Welcome.";
-            }
-            else if(finalResponse.errorCode == 5){
-                finalResponse.message = "Have fun.";
-            }
-            else if(finalResponse.errorCode == 6){
-                finalResponse.message = "Stay safe.";
-            }
-            else if(finalResponse.errorCode == 7){
-                finalResponse.message = "Goodbye and see you soon.";
-            }
-            else if(finalResponse.errorCode == 8){
-                finalResponse.message = "Welcome back.";
-            }
+        if(attendance.getId() != null){
+            finalResponse.isSuccessful = true;
+        }
+        finalResponse.messageCode = attendance.getMessageCode();
+        if(finalResponse.messageCode == 1){
+            finalResponse.message = "You have already started work.";
+        }
+        else if(finalResponse.messageCode == 2){
+            finalResponse.message = "You haven't started work yet.";
+        }
+        else if(finalResponse.messageCode == 3){
+            finalResponse.message = "You haven't finished previous action.";
+        }
+        else if(finalResponse.messageCode == 4){
+            finalResponse.message = "Welcome.";
+        }
+        else if(finalResponse.messageCode == 5){
+            finalResponse.message = "Have fun.";
+        }
+        else if(finalResponse.messageCode == 6){
+            finalResponse.message = "Stay safe.";
+        }
+        else if(finalResponse.messageCode == 7){
+            finalResponse.message = "Goodbye and see you soon.";
+        }
+        else if(finalResponse.messageCode == 8){
+            finalResponse.message = "Welcome back.";
         }
         else{
-
-            finalResponse.isSuccessful = true;
+            finalResponse.message = "Something went wrong.";
         }
         return finalResponse;
     }
