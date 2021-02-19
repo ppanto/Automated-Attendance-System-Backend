@@ -22,7 +22,6 @@ public class AttendanceApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void runAfterStartup() {
-		System.out.println("running startup script");
 		seedService.runAllSeeds();
 	}
 

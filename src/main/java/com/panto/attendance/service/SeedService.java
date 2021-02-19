@@ -74,16 +74,10 @@ public class SeedService {
         int goForThisManyDays = 1500;
 
         LocalDateTime ldt = LocalDateTime.now().minusDays(howManyDaysAgoStart);
-        System.out.println("This is ltd now");
-        System.out.println(ldt);
         java.util.Date dateFrom = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
-        System.out.println("This is datefrom now");
-        System.out.println(dateFrom);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
         int count = calendar.get(Calendar.DAY_OF_WEEK);
-        System.out.println("This is count now");
-        System.out.println(count);
 
         List<MyDate> myDateList = new ArrayList<MyDate>();
         Long milisecondsInDay = 86400000L;
@@ -125,8 +119,6 @@ public class SeedService {
             count++;
             if(count>7) count = 1;
         }
-        System.out.println("This is how many myDateList now");
-        System.out.println(myDateList.size());
         myDateRepository.saveAll(myDateList);
     }
 }

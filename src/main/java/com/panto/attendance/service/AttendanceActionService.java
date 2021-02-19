@@ -53,12 +53,6 @@ public class AttendanceActionService {
         AttendanceActionDateResponse finalResponse = new AttendanceActionDateResponse();
 
         MyDate myDate = myDateRepository.findByFullDate(date);
-        if(myDate != null) {
-            System.out.println(myDate);
-        }
-        else{
-            System.out.println("Date is null");
-        }
         finalResponse.setDate(date);
         finalResponse.setHoliday(myDate.isHoliday());
         finalResponse.setWeekend(myDate.isWeekend());
