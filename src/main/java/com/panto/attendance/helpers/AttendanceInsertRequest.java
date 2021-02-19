@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 public class AttendanceInsertRequest {
-    @NotNull
+    //@NotNull
     public Long personnelId;
     @NotNull
     public int buttonId;

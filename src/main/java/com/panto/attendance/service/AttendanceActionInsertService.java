@@ -25,6 +25,32 @@ public class AttendanceActionInsertService {
         AttendanceActionSimpleResponse response = new AttendanceActionSimpleResponse();
         response.setId(null);
 
+        // for logging, user id is null
+        if(request.personnelId == null){
+            AttendanceAction action = new AttendanceAction(
+                    new Timestamp(System.currentTimeMillis()),
+                    null,
+                    new Date(System.currentTimeMillis())
+            );
+            if(request.buttonId == 1) action.setAttendanceEvent(attendanceEventRepository.getOne(1L));
+            else if(request.buttonId == 2) action.setAttendanceEvent(attendanceEventRepository.getOne(2L));
+            else if(request.buttonId == 3) action.setAttendanceEvent(attendanceEventRepository.getOne(3L));
+            else if(request.buttonId == 4) action.setAttendanceEvent(attendanceEventRepository.getOne(4L));
+
+            attendanceActionRepository.save(action);
+
+            response.setId(action.getId());
+            response.setPersonnelId(null);
+            response.setPersonnelName(null);
+            response.setEvent(action.getAttendanceEvent().getName());
+            response.setEventId(action.getAttendanceEvent().getId());
+            response.setDateTime(action.getDateTime().toLocalDateTime());
+            response.setMessageCode(9);
+
+            return response;
+        }
+        // end for logging
+
         AttendanceAction action = new AttendanceAction(
                 null,
                 personnelRepository.getOne(request.personnelId),

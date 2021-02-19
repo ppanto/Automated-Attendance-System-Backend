@@ -43,7 +43,9 @@ public class AttendanceReportService {
                 .stream().map(myDateMapper::mapDateToTimeReportPerPersonnelForDate)
                 .collect(Collectors.toList());
         List<AttendanceAction> allActionsInRange = attendanceActionRepository
-                .findByBetweenDatesOrdered(dateStart, dateEnd);
+                .findByBetweenDatesOrdered(dateStart, dateEnd)
+                .stream().filter(a -> a.getPersonnelId() != null) // added after adding null user logging
+                .collect(Collectors.toList());
         List<Leave> allLeavesInRange = leaveRepository.findByDateRange(dateStart, dateEnd);
 
         for(TimeReportPerPersonnelResponse perPersonnelReport : finalResponse.getPersonnelTimesList()){
@@ -142,7 +144,9 @@ public class AttendanceReportService {
         List<ChartReportResponse> finalResponse = myDateRepository.findDatesInRange(dateStart,dateEnd)
                 .stream().map(myDateMapper::mapDateToChartResponse)
                 .collect(Collectors.toList());
-        List<AttendanceAction> allActionsInDateRange = attendanceActionRepository.findByBetweenDatesOrdered(dateStart,dateEnd);
+        List<AttendanceAction> allActionsInDateRange = attendanceActionRepository.findByBetweenDatesOrdered(dateStart,dateEnd)
+                .stream().filter(a -> a.getPersonnelId() != null) // added after adding null user logging
+                .collect(Collectors.toList());;
 
         for(ChartReportResponse oneDay : finalResponse){
             HashSet<Long> uniqueEmployeeId = new HashSet<>();

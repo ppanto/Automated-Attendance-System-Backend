@@ -30,16 +30,18 @@ public class AttendanceActionService {
         List<AttendanceActionSimpleResponse> finalResponse = new ArrayList<>();
 
         for(AttendanceAction action : allActionsInDateRange){
-            finalResponse.add(
-                    new AttendanceActionSimpleResponse(
-                            action.getPersonnelId(),
-                            action.getPersonnel().getFirstName() + " " + action.getPersonnel().getLastName(),
-                            action.getDateTime().toLocalDateTime(),
-                            action.getAttendanceEvent().getName(),
-                            action.getAttendanceEvent().getId(),
-                            action.getId()
-                    )
+            AttendanceActionSimpleResponse oneResponse = new AttendanceActionSimpleResponse(
+                    action.getPersonnelId(),
+                    null,
+                    action.getDateTime().toLocalDateTime(),
+                    action.getAttendanceEvent().getName(),
+                    action.getAttendanceEvent().getId(),
+                    action.getId()
             );
+            if(action.getPersonnelId() != null){
+                oneResponse.setPersonnelName(action.getPersonnel().getFirstName() + " " + action.getPersonnel().getLastName());
+            }
+            finalResponse.add(oneResponse);
         }
 
         //finalResponse.sort(Comparator.comparing((AttendanceActionSimpleResponse aa) -> aa.getDateTime()).reversed());
@@ -51,6 +53,12 @@ public class AttendanceActionService {
         AttendanceActionDateResponse finalResponse = new AttendanceActionDateResponse();
 
         MyDate myDate = myDateRepository.findByFullDate(date);
+        if(myDate != null) {
+            System.out.println(myDate);
+        }
+        else{
+            System.out.println("Date is null");
+        }
         finalResponse.setDate(date);
         finalResponse.setHoliday(myDate.isHoliday());
         finalResponse.setWeekend(myDate.isWeekend());
