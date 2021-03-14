@@ -33,7 +33,7 @@ public class AttendanceActionService {
             AttendanceActionSimpleResponse oneResponse = new AttendanceActionSimpleResponse(
                     action.getPersonnelId(),
                     null,
-                    action.getDateTime().toLocalDateTime(),
+                    action.getDateTime().toLocalDateTime().plusHours(1), // temporary added +1 hour till I fix running on cloud
                     action.getAttendanceEvent().getName(),
                     action.getAttendanceEvent().getId(),
                     action.getId()
@@ -114,7 +114,7 @@ public class AttendanceActionService {
             for(AttendanceAction action : filteredForPersonnel){
                 AttendanceActionSingularResponse singularResponse = new AttendanceActionSingularResponse(
                         action.getId(),
-                        action.getDateTime().toLocalDateTime(),
+                        action.getDateTime().toLocalDateTime().plusHours(1), // temporary added +1 hour till I fix running on cloud,
                         action.getAttendanceEvent().getName(),
                         action.getAttendanceEvent().getId()
                 );
@@ -170,7 +170,7 @@ public class AttendanceActionService {
 
         for(AttendanceAction action : allActionsForGivenDate){
             if(action.getAttendanceEvent().getId() == 1L){
-                if(!uniquePersonnelIdForPresent.contains(action.getPersonnelId())){
+                if(action.getPersonnelId() != null && !uniquePersonnelIdForPresent.contains(action.getPersonnelId())){
                     uniquePersonnelIdForPresent.add(action.getPersonnelId());
                     finalResponse.setPresent(finalResponse.getPresent()+1);
                 }

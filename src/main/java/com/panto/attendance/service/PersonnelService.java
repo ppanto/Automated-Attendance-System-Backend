@@ -59,6 +59,7 @@ public class PersonnelService {
             title = titleRepository.findById(entity.getTitleId()).orElse(null);
         }
         Personnel personnel = personnelMapper.mapToDatabasePersonnel(entity, title, department);
+        personnel.setActiveStatus(true);
         personnel = personnelRepository.save(personnel);
 
         // create row for image table

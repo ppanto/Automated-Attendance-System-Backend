@@ -1,6 +1,5 @@
 package com.panto.attendance.service;
 
-import com.panto.attendance.dto.attendance.AttendanceActionSingularResponse;
 import com.panto.attendance.dto.reporting.ChartReportResponse;
 import com.panto.attendance.dto.reporting.TimeReportPerPersonnelForDateResponse;
 import com.panto.attendance.dto.reporting.TimeReportPerPersonnelResponse;
@@ -93,6 +92,9 @@ public class AttendanceReportService {
                     .sorted(Comparator.comparing(AttendanceAction::getDateTime).reversed())
                     .collect(Collectors.toList());
 
+            // Used for eventId 4 set total days worked to only increase by one in one date(day)
+            boolean addedThisDayWorked = false;
+
             for(int i=0;i<actionsInDay.size();i++){
                 Long eventId = actionsInDay.get(i).getAttendanceEvent().getId();
                 Long pairEventId = null;
@@ -113,8 +115,13 @@ public class AttendanceReportService {
                 }
                 if(eventId == 4){
                     oneDay.setTotalTimeWorked(oneDay.getTotalTimeWorked() + time);
-                    personnel.setTotalDaysWorked(personnel.getTotalDaysWorked() + 1);
                     personnel.setTotalTimeWorked(personnel.getTotalTimeWorked() + time);
+
+                    if(!addedThisDayWorked) {
+                        personnel.setTotalDaysWorked(personnel.getTotalDaysWorked() + 1);
+                        addedThisDayWorked = true;
+                    }
+
                     if(oneDay.isHoliday()){
                         oneDay.setTotalHolidayTimeWorked(oneDay.getTotalHolidayTimeWorked() + time);
                         personnel.setTotalHolidayTimeWorked(personnel.getTotalHolidayTimeWorked() + time);
@@ -146,7 +153,7 @@ public class AttendanceReportService {
                 .collect(Collectors.toList());
         List<AttendanceAction> allActionsInDateRange = attendanceActionRepository.findByBetweenDatesOrdered(dateStart,dateEnd)
                 .stream().filter(a -> a.getPersonnelId() != null) // added after adding null user logging
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
 
         for(ChartReportResponse oneDay : finalResponse){
             HashSet<Long> uniqueEmployeeId = new HashSet<>();
