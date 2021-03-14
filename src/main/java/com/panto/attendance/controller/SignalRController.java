@@ -62,28 +62,31 @@ public class SignalRController {
         }
         finalResponse.messageCode = attendance.getMessageCode();
         if(finalResponse.messageCode == 1){
-            finalResponse.message = "You have already started work.";
+            finalResponse.message = String.format("%s, you have already started work.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 2){
-            finalResponse.message = "You haven't started work yet.";
+            finalResponse.message = String.format("%s, you haven't started work yet.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 3){
-            finalResponse.message = "You haven't finished previous action.";
+            finalResponse.message = String.format("%s, you haven't finished previous action.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 4){
-            finalResponse.message = "Welcome.";
+            finalResponse.message = String.format("Welcome %s.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 5){
-            finalResponse.message = "Have fun.";
+            finalResponse.message = String.format("Have fun %s.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 6){
-            finalResponse.message = "Stay safe.";
+            finalResponse.message = String.format("Stay safe %s.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 7){
-            finalResponse.message = "Goodbye and see you soon.";
+            finalResponse.message = String.format("Goodbye and see you soon %s.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 8){
-            finalResponse.message = "Welcome back.";
+            finalResponse.message = String.format("Welcome back %s.", finalResponse.fullName);
+        }
+        else if(finalResponse.messageCode == 9){
+            finalResponse.message = "Not recognized.";
         }
         else{
             finalResponse.message = "Something went wrong.";
@@ -107,7 +110,7 @@ public class SignalRController {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
 
-        long expMillis = nowMillis + (30 * 30 * 10000);
+        long expMillis = nowMillis + (50000000);
         Date exp = new Date(expMillis);
 
         byte[] apiKeySecretBytes = signalRServiceKey.getBytes(StandardCharsets.UTF_8);

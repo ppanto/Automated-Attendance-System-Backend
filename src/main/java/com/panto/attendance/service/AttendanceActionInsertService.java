@@ -3,6 +3,7 @@ package com.panto.attendance.service;
 import com.panto.attendance.dto.attendance.AttendanceActionSimpleResponse;
 import com.panto.attendance.helpers.AttendanceInsertRequest;
 import com.panto.attendance.model.AttendanceAction;
+import com.panto.attendance.model.Personnel;
 import com.panto.attendance.repository.AttendanceActionRepository;
 import com.panto.attendance.repository.AttendanceEventRepository;
 import com.panto.attendance.repository.PersonnelRepository;
@@ -25,7 +26,7 @@ public class AttendanceActionInsertService {
         AttendanceActionSimpleResponse response = new AttendanceActionSimpleResponse();
         response.setId(null);
 
-        // for logging, user id is null
+        // user id is null case (unknown user)
         if(request.personnelId == null){
             AttendanceAction action = new AttendanceAction(
                     new Timestamp(System.currentTimeMillis()),
@@ -49,7 +50,7 @@ public class AttendanceActionInsertService {
 
             return response;
         }
-        // end for logging
+        // end for unknown user case
 
         AttendanceAction action = new AttendanceAction(
                 null,
@@ -58,8 +59,11 @@ public class AttendanceActionInsertService {
         );
 
         List<AttendanceAction> lastEntries = attendanceActionRepository.findLastNByPersonnel(10, request.personnelId);
-        
-        if(request.timeStamp != null && request.eventId != null){
+
+        Personnel personRunningAction = personnelRepository.getOne(action.getPersonnelId());
+        response.setPersonnelName(personRunningAction.getFirstName() + " " + personRunningAction.getLastName());
+
+        if(request.timeStamp != null){
             action.setDateTime(request.timeStamp);
             action.setDate(new Date(request.timeStamp.getTime()));
         }
@@ -178,7 +182,7 @@ public class AttendanceActionInsertService {
         if(action.getId() != null){
             response.setId(action.getId());
             response.setPersonnelId(action.getPersonnelId());
-            response.setPersonnelName(action.getPersonnel().getFirstName() + " " + action.getPersonnel().getLastName());
+            //response.setPersonnelName(action.getPersonnel().getFirstName() + " " + action.getPersonnel().getLastName());
             response.setEvent(action.getAttendanceEvent().getName());
             response.setEventId(action.getAttendanceEvent().getId());
             response.setDateTime(action.getDateTime().toLocalDateTime());

@@ -80,9 +80,9 @@ public class SeedService {
         int count = calendar.get(Calendar.DAY_OF_WEEK);
 
         List<MyDate> myDateList = new ArrayList<MyDate>();
-        Long milisecondsInDay = 86400000L;
-        Long milisecondsForDateCreation = (System.currentTimeMillis() - (howManyDaysAgoStart * milisecondsInDay));
-        Date dateAsDateObject = new Date(milisecondsForDateCreation);
+        Long millisecondsInDay = 86400000L;
+        Long millisecondsForDateCreation = (System.currentTimeMillis() - (howManyDaysAgoStart * millisecondsInDay));
+        Date dateAsDateObject = new Date(millisecondsForDateCreation);
         boolean isHoliday = false;
         boolean isWeekend = false;
 
@@ -113,8 +113,8 @@ public class SeedService {
 
             myDateList.add(currentDate);
 
-            milisecondsForDateCreation+=milisecondsInDay;
-            dateAsDateObject = new Date(milisecondsForDateCreation);
+            millisecondsForDateCreation+=millisecondsInDay;
+            dateAsDateObject = new Date(millisecondsForDateCreation);
 
             count++;
             if(count>7) count = 1;
