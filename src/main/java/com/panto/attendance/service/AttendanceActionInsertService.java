@@ -60,8 +60,7 @@ public class AttendanceActionInsertService {
 
         List<AttendanceAction> lastEntries = attendanceActionRepository.findLastNByPersonnel(10, request.personnelId);
 
-        Personnel personRunningAction = personnelRepository.getOne(action.getPersonnelId());
-        response.setPersonnelName(personRunningAction.getFirstName() + " " + personRunningAction.getLastName());
+        response.setPersonnelName(action.getPersonnel().getFirstName() + " " + action.getPersonnel().getLastName());
 
         if(request.timeStamp != null){
             action.setDateTime(request.timeStamp);
@@ -182,7 +181,6 @@ public class AttendanceActionInsertService {
         if(action.getId() != null){
             response.setId(action.getId());
             response.setPersonnelId(action.getPersonnelId());
-            //response.setPersonnelName(action.getPersonnel().getFirstName() + " " + action.getPersonnel().getLastName());
             response.setEvent(action.getAttendanceEvent().getName());
             response.setEventId(action.getAttendanceEvent().getId());
             response.setDateTime(action.getDateTime().toLocalDateTime());
