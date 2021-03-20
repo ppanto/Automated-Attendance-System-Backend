@@ -1,10 +1,7 @@
 package com.panto.attendance.controller;
 
 import com.panto.attendance.dto.attendance.AttendanceActionSimpleResponse;
-import com.panto.attendance.helpers.AttendanceInsertRequest;
-import com.panto.attendance.helpers.SignalRConnectionInfo;
-import com.panto.attendance.helpers.SignalRMessage;
-import com.panto.attendance.helpers.TerminalResponse;
+import com.panto.attendance.helpers.*;
 import com.panto.attendance.service.AttendanceActionInsertService;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -23,8 +20,8 @@ import java.util.Date;
 @RestController
 public class SignalRController {
 
-    private String signalRServiceKey = "rcLhEZpc8DuGPKygb9E6HKVImPFNMTRimvs6gTtlpU0=";
-    private String signalRServiceBaseEndpoint = "https://attendance.service.signalr.net";
+    @Autowired
+    private SignalRConfigurationProvider signalRDataProvider;
     private String hubName = "actions";
 
     private final AttendanceActionInsertService attendanceActionInsertService;
@@ -35,7 +32,7 @@ public class SignalRController {
 
     @GetMapping("/api/signalr/negotiate")
     public SignalRConnectionInfo negotiate() {
-        String hubUrl = signalRServiceBaseEndpoint + "/client/?hub=" + hubName;
+        String hubUrl = signalRDataProvider.getSignalRServiceBaseEndpoint() + "/client/?hub=" + hubName;
         String accessKey = generateJwt(hubUrl, null /*"12345"*/);
         return new SignalRConnectionInfo(hubUrl, accessKey);
     }
@@ -94,7 +91,7 @@ public class SignalRController {
         return finalResponse;
     }
     private void sendMessageToClientsViaSignal(AttendanceActionSimpleResponse response){
-        String hubUrl = signalRServiceBaseEndpoint + "/api/v1/hubs/" + hubName;
+        String hubUrl = signalRDataProvider.getSignalRServiceBaseEndpoint() + "/api/v1/hubs/" + hubName;
         String accessKey = generateJwt(hubUrl, null);
 
         Unirest.post(hubUrl)
@@ -113,7 +110,7 @@ public class SignalRController {
         long expMillis = nowMillis + (50000000);
         Date exp = new Date(expMillis);
 
-        byte[] apiKeySecretBytes = signalRServiceKey.getBytes(StandardCharsets.UTF_8);
+        byte[] apiKeySecretBytes = signalRDataProvider.getSignalRApiKey().getBytes(StandardCharsets.UTF_8);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         JwtBuilder builder = Jwts.builder()
