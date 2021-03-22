@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -22,7 +23,8 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new User(
                 user.getUsername(),
                 user.getPasswordHash(),
-                Arrays.asList(new SimpleGrantedAuthority("hr"))
+                new ArrayList<>()
+                //Arrays.asList(new SimpleGrantedAuthority("hr"))
         );
     }
 }
