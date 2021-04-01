@@ -20,10 +20,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @PropertySource("classpath:server.properties")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    @Value("${serverUrl}")
-    private String serverUrl;
+    @Value("${serverName}")
+    private String serverName;
+    @Value("${serverNameSSL}")
+    private String serverNameSSL;
     @Value("${serverIp}")
     private String serverIp;
+    @Value("${serverIpSSL}")
+    private String serverIpSSL;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -61,7 +65,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 registry.addMapping("/**").allowCredentials(true)
                         .allowedOrigins(
                                 serverIp,
-                                serverUrl,
+                                serverName,
+                                serverIpSSL,
+                                serverNameSSL,
                                 "http://front:3001",
                                 "http://localhost:3001",
                                 "http://localhost:3000",

@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/auth.properties
+/src/main/resources/keystore.p12
+/src/main/resources/server.properties
+/src/main/resources/signalr.properties
+/src/main/java/com/panto/attendance/controller/SeedController.java
