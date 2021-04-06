@@ -16,18 +16,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:server.properties")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    @Value("${serverName}")
-    private String serverName;
-    @Value("${serverNameSSL}")
-    private String serverNameSSL;
-    @Value("${serverIp}")
-    private String serverIp;
-    @Value("${serverIpSSL}")
-    private String serverIpSSL;
+    @Value("#{'${allowed.origins}'.split(',')}")
+    private List<String> rawOrigins;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -63,17 +59,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").allowCredentials(true)
-                        .allowedOrigins(
-                                serverIp,
-                                serverName,
-                                serverIpSSL,
-                                serverNameSSL,
-                                "http://front:3001",
-                                "http://localhost:3001",
-                                "http://localhost:3000",
-                                "http://localhost:5000")
+                        .allowedOrigins(getOriginStringArray())
                         .allowedMethods("*");
             }
         };
+    }
+
+    private String[] getOriginStringArray() {
+        String[] originArray = new String[rawOrigins.size()];
+        return rawOrigins.toArray(originArray);
     }
 }
