@@ -29,9 +29,17 @@ public class SeedService {
         if(events.size() != 0) return;
         seedDateTable();
         seedAttendanceEventTable();
-        seedPersonnelTable();
+        seedFirstApplicationUser();
+        //seedPersonnelTable();
     }
+    private void seedFirstApplicationUser(){
+        ApplicationUser applicationUser = new ApplicationUser();
+        applicationUser.setUsername("Admin");
+        applicationUser.setPasswordHash(passwordEncoder.encode("adminAdmin"));
+        applicationUser.setAccountActive(true);
 
+        userRepository.save(applicationUser);
+    }
     private void seedPersonnelTable(){ // also includes user account and image
         Personnel personnel = new Personnel();
         personnel.setFirstName("Admin");
@@ -43,7 +51,7 @@ public class SeedService {
 
         ApplicationUser applicationUser = new ApplicationUser();
         applicationUser.setPersonnel(personnel);
-        applicationUser.setUsername("Admin");
+        applicationUser.setUsername("AdminUser");
         applicationUser.setAccountActive(true);
         applicationUser.setPasswordHash(passwordEncoder.encode("adminAdmin"));
         userRepository.save(applicationUser);

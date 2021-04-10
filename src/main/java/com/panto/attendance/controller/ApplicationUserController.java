@@ -17,6 +17,16 @@ import java.util.List;
 public class ApplicationUserController {
     private final ApplicationUserService applicationUserService;
 
+    @GetMapping("filtered/by-username")
+    ResponseEntity<?> getByUsername(@RequestParam String username){
+        try{
+            return ResponseEntity.ok().body(applicationUserService.getApplicationUserResponse(username));
+        }
+        catch(Exception ex){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping
     ResponseEntity<?> get() {
         return ResponseEntity.ok().body(applicationUserService.get());

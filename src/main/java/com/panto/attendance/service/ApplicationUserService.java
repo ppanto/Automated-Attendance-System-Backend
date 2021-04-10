@@ -9,7 +9,6 @@ import com.panto.attendance.model.Personnel;
 import com.panto.attendance.repository.ApplicationUserRepository;
 import com.panto.attendance.repository.PersonnelRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,12 +45,16 @@ public class ApplicationUserService {
         List<ApplicationUser> userWithSameUsernameList = applicationUserRepository.findByUsername(entity.getUsername());
         if(userWithSameUsernameList.size() > 0) throw new Exception();
 
-        Personnel personnel = personnelRepository.findById(entity.getPersonnelId())
-                .orElseThrow(Exception::new);
         ApplicationUser newUser = new ApplicationUser();
+
+        if(entity.getPersonnelId() != null && entity.getPersonnelId() != 0) {
+            Personnel personnel = personnelRepository.findById(entity.getPersonnelId())
+                    .orElseThrow(Exception::new);
+            newUser.setPersonnel(personnel);
+        }
+
         newUser.setAccountActive(true);
         newUser.setUsername(entity.getUsername());
-        newUser.setPersonnel(personnel);
         newUser.setPasswordHash(passwordEncoder.encode(entity.getPassword()));
         applicationUserRepository.save(newUser);
         return applicationUserMapper.mapToDtoResponse(newUser);
@@ -70,6 +73,12 @@ public class ApplicationUserService {
         if(user.isEmpty()) throw new UsernameNotFoundException("No user with that username.");
         if(!user.get(0).isAccountActive()) throw new UsernameNotFoundException("No user with that username or account not active.");
         return user.get(0);
+    }
+
+    public ApplicationUserResponse getApplicationUserResponse(String username){
+        List<ApplicationUser> user = applicationUserRepository.findByUsername(username);
+        if(user.isEmpty()) throw new UsernameNotFoundException("No user with that username.");
+        return applicationUserMapper.mapToDtoResponse(user.get(0));
     }
 
     public void updatePassword(String username, String newPassword) throws UsernameNotFoundException{

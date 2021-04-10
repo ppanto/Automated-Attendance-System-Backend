@@ -14,7 +14,6 @@ public class ApplicationUserInsertRequest {
     private Long id;
     @NotBlank
     private String password;
-    @NotBlank
     private Long personnelId;
     @NotBlank
     private String username;

@@ -112,7 +112,11 @@ public class PersonnelService {
         List<Personnel> personnelList = personnelRepository.findAll();
         List<ApplicationUser> userList = applicationUserRepository.findAll();
         List<Long> personnelIdsWithAccountList = new ArrayList<>();
-        userList.forEach(u -> personnelIdsWithAccountList.add(u.getPersonnel().getId()));
+        userList.forEach(u -> {
+            if(u.getPersonnel() != null) {
+                personnelIdsWithAccountList.add(u.getPersonnel().getId());
+            }
+        });
         List<PersonnelSimpleResponse> allPersonnelWithNoUserAccount = new ArrayList<>();
         personnelList.forEach(personnel -> {
            if(!personnelIdsWithAccountList.contains(personnel.getId())){

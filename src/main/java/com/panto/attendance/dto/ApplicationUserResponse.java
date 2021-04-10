@@ -14,4 +14,5 @@ public class ApplicationUserResponse {
     private String fullName;
     private boolean isAccountActive;
     private String isAccountActiveAsString;
+    private Long personnelId;
 }
