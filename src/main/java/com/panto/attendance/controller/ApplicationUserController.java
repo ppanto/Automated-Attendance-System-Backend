@@ -40,4 +40,8 @@ public class ApplicationUserController {
         //return ResponseEntity.created(new URI("/api/user/" + result.getId())).body(result);
         return ResponseEntity.ok().body(applicationUserService.create(entity));
     }
+    @DeleteMapping("{id}")
+    ResponseEntity<?> delete(@PathVariable Long id){
+        return applicationUserService.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
 }

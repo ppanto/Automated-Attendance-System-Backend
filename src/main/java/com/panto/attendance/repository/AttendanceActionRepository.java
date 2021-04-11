@@ -16,4 +16,6 @@ public interface AttendanceActionRepository extends JpaRepository<AttendanceActi
     List<AttendanceAction> findByBetweenDatesOrdered(@Param("startDate")Date startDate, @Param("endDate")Date endDate);
     @Query(value="SELECT * FROM attendance_action as aa WHERE personnel_id = :personnelId ORDER BY date_time DESC LIMIT :lastN",nativeQuery = true)
     List<AttendanceAction> findLastNByPersonnel(@Param("lastN") int lastN, @Param("personnelId") Long personnelId);
+
+    void deleteByPersonnelId(Long id);
 }

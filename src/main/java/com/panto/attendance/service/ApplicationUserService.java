@@ -87,4 +87,12 @@ public class ApplicationUserService {
         user.get(0).setPasswordHash(passwordEncoder.encode(newPassword));
         applicationUserRepository.save(user.get(0));
     }
+
+    public boolean delete(Long id){
+        if(applicationUserRepository.existsById(id)){
+            applicationUserRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public class PersonnelService {
     private final TitleRepository titleRepository;
     private final ApplicationUserRepository applicationUserRepository;
     private final PersonnelImageRepository personnelImageRepository;
+    private final PersonnelShiftRepository personnelShiftRepository;
+    private final LeaveRepository leaveRepository;
+    private final AttendanceActionRepository attendanceActionRepository;
 
     public List<PersonnelResponse> get(){
         return personnelRepository
@@ -124,5 +128,19 @@ public class PersonnelService {
            }
         });
         return allPersonnelWithNoUserAccount;
+    }
+
+    @Transactional
+    public boolean delete(Long id) {
+        if(personnelRepository.existsById(id)){
+            personnelShiftRepository.deleteByPersonnelId(id);
+            personnelImageRepository.deleteByPersonnelId(id);
+            leaveRepository.deleteByPersonnelId(id);
+            attendanceActionRepository.deleteByPersonnelId(id);
+            applicationUserRepository.deleteByPersonnelId(id);
+            personnelRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

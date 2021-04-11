@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PersonnelShiftRepository extends JpaRepository<PersonnelShift, Long> {
     List<PersonnelShift> findByPersonnelId(Long personnelId);
+    void deleteByPersonnelId(Long personnelId);
 }

@@ -14,4 +14,6 @@ public interface LeaveRepository extends JpaRepository<Leave, Long> {
     List<Leave> findByPersonnelIdAndDate(Long personnelId, Date date);
     @Query(value = "SELECT * FROM leave as l WHERE l.date >= :startDate AND l.date <= :endDate", nativeQuery = true)
     List<Leave> findByDateRange(@Param("startDate")Date startDate, @Param("endDate")Date endDate);
+
+    void deleteByPersonnelId(Long id);
 }

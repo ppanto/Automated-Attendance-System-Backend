@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, Long> {
     List<ApplicationUser> findByUsername(String username);
+
+    void deleteByPersonnelId(Long id);
 }
