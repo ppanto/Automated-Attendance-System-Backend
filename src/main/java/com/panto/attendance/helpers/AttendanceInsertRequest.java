@@ -9,5 +9,5 @@ public class AttendanceInsertRequest {
     @NotNull
     public int buttonId;
     public Timestamp timeStamp = null;
-    public Long eventId = null;
+    //public Long eventId = null;
 }

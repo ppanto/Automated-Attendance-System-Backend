@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class AttendanceAction {
     private Timestamp dateTime;
     @Column(name = "event_date")
     private Date date;
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = EAGER)
     private AttendanceEvent attendanceEvent;
     @ManyToOne(fetch = LAZY)
     private Personnel personnel;

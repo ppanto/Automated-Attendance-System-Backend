@@ -65,7 +65,7 @@ public class SignalRController {
             finalResponse.message = String.format("%s, you haven't started work yet.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 3){
-            finalResponse.message = String.format("%s, you haven't finished previous action.", finalResponse.fullName);
+            finalResponse.message = String.format("%s, you haven't closed your Break.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 4){
             finalResponse.message = String.format("Welcome %s.", finalResponse.fullName);
@@ -83,6 +83,9 @@ public class SignalRController {
             finalResponse.message = String.format("Welcome back %s.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 9){
+            finalResponse.message = String.format("%s, you haven't closed your Official Absence.", finalResponse.fullName);
+        }
+        else if(finalResponse.messageCode == 10){
             finalResponse.message = "Not recognized.";
         }
         else{
