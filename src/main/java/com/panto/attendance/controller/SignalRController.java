@@ -59,10 +59,10 @@ public class SignalRController {
         }
         finalResponse.messageCode = attendance.getMessageCode();
         if(finalResponse.messageCode == 1){
-            finalResponse.message = String.format("%s, you have already started work.", finalResponse.fullName);
+            finalResponse.message = String.format("%s, you have already started your shift.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 2){
-            finalResponse.message = String.format("%s, you haven't started work yet.", finalResponse.fullName);
+            finalResponse.message = String.format("%s, you haven't started your shift yet.", finalResponse.fullName);
         }
         else if(finalResponse.messageCode == 3){
             finalResponse.message = String.format("%s, you haven't closed your Break.", finalResponse.fullName);
