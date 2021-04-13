@@ -143,4 +143,18 @@ public class PersonnelService {
         }
         return false;
     }
+
+    @Transactional
+    public boolean delete_all() {
+        List<Personnel> personnel = personnelRepository.findAll();
+        personnel.forEach(p -> {
+            personnelShiftRepository.deleteByPersonnelId(p.getId());
+            personnelImageRepository.deleteByPersonnelId(p.getId());
+            leaveRepository.deleteByPersonnelId(p.getId());
+            attendanceActionRepository.deleteByPersonnelId(p.getId());
+            applicationUserRepository.deleteByPersonnelId(p.getId());
+            personnelRepository.deleteById(p.getId());
+        });
+        return true;
+    }
 }

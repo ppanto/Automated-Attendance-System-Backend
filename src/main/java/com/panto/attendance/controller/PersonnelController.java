@@ -48,6 +48,10 @@ public class PersonnelController {
     ResponseEntity<?> delete(@PathVariable Long id){
         return personnelService.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
+    @DeleteMapping("/wipe")
+    ResponseEntity<?> delete_all(){
+        return personnelService.delete_all() ? ResponseEntity.ok().build() : ResponseEntity.status(500).build();
+    }
     @PostMapping
     ResponseEntity<?> post(@Valid @RequestBody PersonnelUpsertRequest entity) throws URISyntaxException {
         PersonnelResponse result = personnelService.create(entity);
