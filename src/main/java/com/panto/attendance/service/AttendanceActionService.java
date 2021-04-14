@@ -3,6 +3,7 @@ package com.panto.attendance.service;
 import com.panto.attendance.dto.PersonnelExtraSimpleResponse;
 import com.panto.attendance.dto.attendance.*;
 import com.panto.attendance.dto.reporting.DailyReportResponse;
+import com.panto.attendance.helpers.enums.AttendanceActionEnum;
 import com.panto.attendance.mapper.PersonnelMapper;
 import com.panto.attendance.model.*;
 import com.panto.attendance.repository.*;
@@ -157,67 +158,99 @@ public class AttendanceActionService {
         finalResponse.setAttendanceActionDatePersonnelResponses(listForFinalResponse);
         return finalResponse;
     }
-
     public DailyReportResponse getDailyReport(Date date){
         DailyReportResponse finalResponse = new DailyReportResponse();
+
+        List<AttendanceAction> allActionsForGivenDate = attendanceActionRepository.findByDateOrdered(date);
+
         List<Personnel> allPersonnel = personnelRepository.findByActiveStatus(true);
-        List<AttendanceAction> allActionsForGivenDate = attendanceActionRepository.findByDate(date);
+        HashMap<Long, Personnel> allPersonnelHashMap = new HashMap<>();
+        for(Personnel p : allPersonnel) allPersonnelHashMap.put(p.getId(), p);
         List<Leave> allLeavesForGivenDate = leaveRepository.findByDate(date);
 
+        finalResponse.setTotalPersonnel(allPersonnel.size());
+
         HashSet<Long> uniquePersonnelIdForPresent = new HashSet<>();
+
+        HashSet<Long> uniquePersonnelIdForCheckIn = new HashSet<>();
         HashSet<Long> uniquePersonnelIdForCheckOut = new HashSet<>();
-        HashSet<Personnel> hasCheckInButNoCheckOut = new HashSet<>(); // = people currently at work
+
+        HashMap<Long, Integer> uniquePersonnelIdForCurrentlyAtWork = new HashMap<>();
+        HashSet<Long> uniquePersonnelIdForCurrentlyOutside = new HashSet<>();
 
         for(AttendanceAction action : allActionsForGivenDate){
-            if(action.getAttendanceEvent().getId() == 1L){
-                if(action.getPersonnelId() != null && !uniquePersonnelIdForPresent.contains(action.getPersonnelId())){
-                    uniquePersonnelIdForPresent.add(action.getPersonnelId());
-                    finalResponse.setPresent(finalResponse.getPresent()+1);
+            Long actionEventId = action.getAttendanceEvent().getId();
+            Long personnelId = action.getPersonnelId();
+            if(actionEventId == AttendanceActionEnum.WORK_START.getValue()){
+                uniquePersonnelIdForPresent.add(personnelId);
+
+                uniquePersonnelIdForCheckIn.add(personnelId);
+
+                uniquePersonnelIdForCurrentlyAtWork.put(personnelId, 1);
+            }
+            else if(actionEventId == AttendanceActionEnum.BREAK_START.getValue() ||
+                    actionEventId == AttendanceActionEnum.OFFICIAL_START.getValue() ){
+                var value = uniquePersonnelIdForCurrentlyAtWork.get(personnelId);
+                if(value != null) {
+                    uniquePersonnelIdForCurrentlyAtWork.put(personnelId, value - 1);
                 }
             }
-            else if(action.getAttendanceEvent().getId() == 4L){
-                if(!uniquePersonnelIdForCheckOut.contains(action.getPersonnelId())){
-                    uniquePersonnelIdForCheckOut.add(action.getPersonnelId());
-                    finalResponse.setCheckedOut(finalResponse.getCheckedOut()+1);
+            else if(actionEventId == AttendanceActionEnum.BREAK_END.getValue() ||
+                    actionEventId == AttendanceActionEnum.OFFICIAL_END.getValue() ){
+                var value = uniquePersonnelIdForCurrentlyAtWork.get(personnelId);
+                if(value != null) {
+                    uniquePersonnelIdForCurrentlyAtWork.put(personnelId, value + 1);
                 }
+                else{
+                    uniquePersonnelIdForCurrentlyAtWork.put(personnelId, 1);
+                }
+            }
+            else if(actionEventId == AttendanceActionEnum.WORK_END.getValue()){
+                uniquePersonnelIdForCheckOut.add(personnelId);
+                uniquePersonnelIdForCheckIn.remove(personnelId);
+
+                uniquePersonnelIdForCurrentlyAtWork.remove(personnelId);
             }
         }
+        finalResponse.setPresent(uniquePersonnelIdForPresent.size());
+        finalResponse.setCheckedIn(uniquePersonnelIdForCheckIn.size());
+        finalResponse.setCheckedOut(uniquePersonnelIdForCheckOut.size());
+
+        int haveLeaveButPersonnelAtWork = 0;
+        for(Leave leave : allLeavesForGivenDate){
+            if(leave.isApproved()) finalResponse.setApprovedLeave(finalResponse.getApprovedLeave() + 1);
+            else finalResponse.setUnapprovedLeave(finalResponse.getUnapprovedLeave() + 1);
+            if(uniquePersonnelIdForPresent.contains(leave.getPersonnelId())) haveLeaveButPersonnelAtWork++;
+        }
+
+        Collection<PersonnelExtraSimpleResponse> currentlyAtWork = new ArrayList<>();
+        uniquePersonnelIdForCurrentlyAtWork.forEach((id, value) -> {
+            if(value == 1) {
+                currentlyAtWork.add(personnelMapper.mapToDtoExtraSimpleResponse(
+                        allPersonnelHashMap.get(id)
+                ));
+            }
+        });
+        finalResponse.setCurrentlyAtWork(currentlyAtWork);
 
         for(Personnel p : allPersonnel){
-            if(!uniquePersonnelIdForCheckOut.contains(p.getId()) && uniquePersonnelIdForPresent.contains(p.getId())){
-                hasCheckInButNoCheckOut.add(p);
+            var value = uniquePersonnelIdForCurrentlyAtWork.get(p.getId());
+            if(value == null || value != 1){
+                uniquePersonnelIdForCurrentlyOutside.add(p.getId());
             }
         }
         List<PersonnelExtraSimpleResponse> currentlyNotAtWork = new ArrayList<>();
-        for(Personnel p : allPersonnel){
-            if(!customDoesContain(hasCheckInButNoCheckOut, p.getId())){
-                currentlyNotAtWork.add(personnelMapper.mapToDtoExtraSimpleResponse(p));
-            }
-        }
-
-        for(Leave l : allLeavesForGivenDate){
-            // does not check for uniqueness
-            if(l.isApproved()){
-                finalResponse.setApprovedLeave(finalResponse.getApprovedLeave()+1);
-            }
-        }
-
-        finalResponse.setUnapprovedLeave(allLeavesForGivenDate.size()-finalResponse.getApprovedLeave());
+        uniquePersonnelIdForCurrentlyOutside.forEach((id) -> {
+            currentlyNotAtWork.add(personnelMapper.mapToDtoExtraSimpleResponse(
+                    allPersonnelHashMap.get(id)
+            ));
+        });
         finalResponse.setCurrentlyNotAtWork(currentlyNotAtWork);
-        finalResponse.setCurrentlyAtWork(hasCheckInButNoCheckOut.stream().map(personnelMapper::mapToDtoExtraSimpleResponse).collect(Collectors.toList()));
-        finalResponse.setCheckedIn(finalResponse.getPresent());
 
-        finalResponse.setTotalPersonnel(allPersonnel.size());
+        finalResponse.setYetToCheckIn(finalResponse.getTotalPersonnel() - finalResponse.getApprovedLeave() - finalResponse.getUnapprovedLeave() - finalResponse.getPresent() + haveLeaveButPersonnelAtWork);
         finalResponse.setAbsent(finalResponse.getTotalPersonnel() - finalResponse.getPresent());
-        finalResponse.setYetToCheckIn(finalResponse.getTotalPersonnel() - allLeavesForGivenDate.size() - finalResponse.getPresent()); // does not check for uniqueness of leaves
-        return finalResponse;
-    }
 
-    private boolean customDoesContain(HashSet<Personnel> hashset, Long id){
-        for(Personnel p : hashset){
-            if(p.getId() == id) return true;
-        }
-        return false;
+        return finalResponse;
     }
 
     private boolean getIsEndTimeRegular(Time shiftEndTime, LocalDateTime dateTime) {

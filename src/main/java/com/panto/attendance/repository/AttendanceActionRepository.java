@@ -9,6 +9,9 @@ import java.sql.Date;
 import java.util.List;
 
 public interface AttendanceActionRepository extends JpaRepository<AttendanceAction, Long> {
+    @Query(value = "SELECT * FROM attendance_action as aa WHERE aa.event_date = :date ORDER BY aa.date_time ASC", nativeQuery = true)
+    List<AttendanceAction> findByDateOrdered(@Param("date")Date date);
+
     List<AttendanceAction> findByDate(Date date);
     @Query(value = "SELECT * FROM attendance_action as aa WHERE aa.event_date >= :startDate AND aa.event_date <= :endDate", nativeQuery = true)
     List<AttendanceAction> findByBetweenDates(@Param("startDate")Date startDate, @Param("endDate")Date endDate);
